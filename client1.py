@@ -1,25 +1,42 @@
-import time, socket, sys
+import socket
+import threading
 
-socket_server = socket.socket()
-server_host = ''
-ip = '192.168.6.6'
-sport = 8889
+# Choosing Nickname
+nickname = input("Choose your nickname: ")
 
-print('This is your IP address: ',ip)
-server_host = input('Enter friend\'s IP address:')
-FriendsName = input('Enter your friend\'s name: ')
-name = input('Enter your name: ')
+# Connecting To Server
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(('192.168.6.4', 8889))
 
+# Listening to Server and Sending Nickname
+def receive():
 
-socket_server.connect((server_host, sport))
-
-socket_server.send(name.encode())
-server_name = socket_server.recv(1024)
-server_name = server_name.decode()
-
-print(server_name,' has joined...')
 while True:
-    message = (socket_server.recv(1024)).decode()
-    print(server_name, ":", message)
-    message = input("Me : ")
-    socket_server.send(message.encode())
+   try:
+       # Receive Message From Server
+       # If 'NICK' Send Nickname
+       message = client.recv(1024).decode('ascii')
+       if message == 'NICK':
+          client.send(nickname.encode('ascii'))
+       else:
+          print(message)
+   except:
+      # Close Connection When Error
+      print("An error occured!")
+      client.close()
+      break
+
+# Sending Messages To Server
+def write():
+    while True:
+               message = f'{nickname}: {input (" " )}'
+               client.send(message.encode('ascii'))
+
+# Starting Threads For Listening And Writing
+receive_thread = threading.Thread(target=receive)
+receive_thread.start()
+
+write_thread = threading.Thread(target=write)
+write_thread.start()
+
+
