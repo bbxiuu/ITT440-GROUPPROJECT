@@ -7,7 +7,8 @@ sport = 8889
 
 print('This is your IP address: ',ip)
 server_host = input('Enter friend\'s IP address:')
-name = input('Enter Friend\'s name: ')
+FriendsName = input('Enter your friend\'s name: ')
+name = input('Enter your name: ')
 
 
 socket_server.connect((server_host, sport))
