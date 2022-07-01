@@ -10,7 +10,7 @@ new_socket.bind((host_name, port))
 print( "Binding successful!")
 print("This is your IP: ", s_ip)
 
-name = input('Enter name: ')
+name = input('Enter your name: ')
 
 new_socket.listen(50)
 
