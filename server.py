@@ -1,32 +1,64 @@
-import time, socket, sys
+import socket
+import threading
 
-new_socket = socket.socket()
-host_name = ''
-s_ip = '192.168.6.4'
-
+# Connection Data
+host = '192.168.6.4' #localhost
 port = 8889
 
-new_socket.bind((host_name, port))
-print( "Binding successful!")
-print("This is your IP: ", s_ip)
+# Starting Server
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((host, port))
+server.listen()
 
-name = input('Enter your name: ')
+# Lists For Clients and Their Nicknames
+clients = []
+nicknames = []
 
-new_socket.listen(50)
+# Sending Messages To All Connected Clients
+def broadcast(message):
+      for client in clients:
+          client.send(message)
 
+# Handling Messages From Clients
+def handle(client):
+        while True:
+               try:
 
-conn, add = new_socket.accept()
+                   # Broadcasting Messages
+                   message = client.recv(1024)
+                   broadcast(message)
 
-print("Received connection from ", add[0])
-print('Connection Established. Connected From: ',add[0])
+               except:
+                   # Removing And Closing Clients
+                   index = clients.index(client)
+                   clients.remove(client)
+                   client.close()
+                   nickname = nicknames[index]
+                   broadcast(f'{nickname} left the chat!'.encode('ascii'))
+                   nicknames.remove(nickname)
+               break
 
-client = (conn.recv(1024)).decode()
-print(client + ' has connected.')
+# Receiving / Listening Function
+def receive():
+      while True:
+            # Accept Connection
+            client, address = server.accept()
+            print(f'Connected with {str(address)}')
 
-conn.send(name.encode())
-while True:
-    message = input('Me : ')
-    conn.send(message.encode())
-    message = conn.recv(1024)
-    message = message.decode()
-    print(client, ':', message)
+            # Request And Store Nickname
+            client.send('NICK'.encode('ascii'))
+            nickname = client.recv(1024).decode('ascii')
+            nicknames.append(nickname)
+            clients.append(client)
+
+            # Print And Broadcast Nickname
+            print(f'Nickname of the client is {nickname}!')
+            broadcast(f'{nickname} joined the chat! '.encode('ascii'))
+            client.send('Connected to server!'.encode('ascii'))
+
+            # Start Handling Thread For Client
+            thread = threading.Thread(target=handle, args=(client,))
+            thread.start()
+
+print("Server is listening…")
+receive()
