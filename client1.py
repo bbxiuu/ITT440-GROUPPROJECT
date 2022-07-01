@@ -1,34 +1,24 @@
-import socket
-import select
-import sys
+import time, socket, sys
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket_server = socket.socket()
+server_host = ''
+ip = '192.168.6.6'
+sport = 8889
 
-host = '192.168.6.4'
-port = 8889
+print('This is your IP address: ',ip)
+server_host = input('Enter friend\'s IP address:')
+name = input('Enter Friend\'s name: ')
 
-server.connect((host,port))
 
-file = open("sample.txt", "rb")
-SendData = file.read(1024)
+socket_server.connect((server_host, sport))
 
+socket_server.send(name.encode())
+server_name = socket_server.recv(1024)
+server_name = server_name.decode()
+
+print(server_name,' has joined...')
 while True:
-
-    sockets_list = [sys.stdin, server]
-    read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
-
-    for socks in read_sockets:
-        if socks == server:
-            message = socks.recv(2048)
-            print (message)
-        else:
-            message = sys.stdin.readline()
-            server.send(message.encode())
-            sys.stdout.write("<You>")
-            sys.stdout.write(message)
-            sys.stdout.flush()
-           # while SendData:
-                  # server.send(SendData)
-                  # SendData = file.read(1024) 
-                  # print("\n\n################## File Transfer Status from server ################## \n\n ", server.recv(1024).decode("utf-8"))
-server.close()
+    message = (socket_server.recv(1024)).decode()
+    print(server_name, ":", message)
+    message = input("Me : ")
+    socket_server.send(message.encode())
