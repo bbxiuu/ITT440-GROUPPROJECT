@@ -11,7 +11,7 @@ client.connect(('192.168.6.4', 8889))
 # Listening to Server and Sending Nickname
 def receive():
 
-while True:
+ while True:
    try:
        # Receive Message From Server
        # If 'NICK' Send Nickname
