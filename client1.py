@@ -11,20 +11,20 @@ client.connect(('192.168.6.4', 8889))
 # Listening to Server and Sending Nickname
 def receive():
 
- while True:
-   try:
-       # Receive Message From Server
-       # If 'NICK' Send Nickname
-       message = client.recv(1024).decode('ascii')
-       if message == 'NICK':
-          client.send(nickname.encode('ascii'))
-       else:
-          print(message)
-   except:
-      # Close Connection When Error
-      print("An error occured!")
-      client.close()
-      break
+     while True:
+            try:
+                 # Receive Message From Server
+                 # If 'NICK' Send Nickname
+                  message = client.recv(1024).decode('ascii')
+                  if message == 'NICK':
+                     client.send(nickname.encode('ascii'))
+                  else:
+                     print(message)
+            except:
+                 # Close Connection When Error
+                 print("An error occured!")
+                 client.close()
+                 break
 
 # Sending Messages To Server
 def write():
@@ -38,5 +38,3 @@ receive_thread.start()
 
 write_thread = threading.Thread(target=write)
 write_thread.start()
-
-

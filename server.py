@@ -36,7 +36,7 @@ def handle(client):
                    nickname = nicknames[index]
                    broadcast(f'{nickname} left the chat!'.encode('ascii'))
                    nicknames.remove(nickname)
-               break
+                   break
 
 # Receiving / Listening Function
 def receive():
