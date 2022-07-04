@@ -1,12 +1,15 @@
 import socket
 import threading
+from datetime import datetime
+
+e = datetime.now()
 
 # Choosing Nickname
 nickname = input("Choose your nickname: ")
 
 # Connecting To Server
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('192.168.6.4', 8889))
+client.connect(('192.168.248.2', 8889))
 
 # Listening to Server and Sending Nickname
 def receive():
@@ -31,6 +34,8 @@ def write():
     while True:
                message = f'{nickname}: {input (" " )}'
                client.send(message.encode('ascii'))
+               current = e.strftime("%H:%M:%S")
+               print(current)
 
 # Starting Threads For Listening And Writing
 receive_thread = threading.Thread(target=receive)
