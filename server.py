@@ -2,7 +2,7 @@ import socket
 import threading
 
 # Connection Data
-host = '192.168.6.4' #localhost
+host = '192.168.56.102' #localhost
 port = 8889
 
 # Starting Server
@@ -36,7 +36,7 @@ def handle(client):
                    nickname = nicknames[index]
                    broadcast(f'{nickname} left the chat!'.encode('ascii'))
                    nicknames.remove(nickname)
-               break
+                   break
 
 # Receiving / Listening Function
 def receive():
@@ -60,5 +60,5 @@ def receive():
             thread = threading.Thread(target=handle, args=(client,))
             thread.start()
 
-print("Server is listening…")
+print("Server is listening… \N{smiling face with sunglasses} \N{zipper-mouth face} \N{loudly crying face} \N{rolling on the floor laughing} \N{face with tears of joy}")
 receive()
